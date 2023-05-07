@@ -1,4 +1,4 @@
-FROM maven:3.8.1-openjdk-20 AS MAVEN_BUILD
+FROM maven:3.9.1-amazoncorretto-20 AS MAVEN_BUILD
 
 MAINTAINER Ali Javidan
 
@@ -10,7 +10,7 @@ WORKDIR /build/
 
 RUN mvn package
 
-FROM openjdk:20
+FROM amazoncorretto:20
 
 WORKDIR /app
 

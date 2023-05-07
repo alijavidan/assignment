@@ -1,11 +1,17 @@
 # stage1 as builder
-FROM node:18.16.0-alpine as builder
+#FROM node:18.16.0-alpine as builder
+FROM nikolaik/python-nodejs:python3.11-nodejs18-alpine-canary as builder
 
 # copy the package.json to install dependencies
 COPY package.json package-lock.json ./
 
+RUN apk update && apk add --virtual build-dependencies build-base gcc wget git
+
+COPY ./node_modules ./node_modules
+
 # Install the dependencies and make the folder
-RUN npm install && mkdir /react-ui && mv ./node_modules ./react-ui
+RUN mkdir /react-ui && mv ./node_modules ./react-ui
+#RUN npm install && mkdir /react-ui && mv ./node_modules ./react-ui
 
 WORKDIR /react-ui
 
@@ -24,7 +30,7 @@ COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
 ## Remove default nginx index page
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy from the stahg 1
+# Copy from the stage 1
 COPY --from=builder /react-ui/build /usr/share/nginx/html
 
 # This does'nt matter in nginx! :)
